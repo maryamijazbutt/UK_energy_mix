@@ -1,0 +1,11 @@
+relationship 3b73202b-19a2-496e-9b6f-1fdca89351c1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.Date
+	toColumn: LocalDateTable_b3683b3c-ed04-4fa0-8e0f-e16654347f87.Date
+
+relationship 1cc3d5f9-1b10-a76a-5e1d-abd9bb89d67a
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: df_fuel_ckan.DATETIME
+	toColumn: Calendar.Date
+

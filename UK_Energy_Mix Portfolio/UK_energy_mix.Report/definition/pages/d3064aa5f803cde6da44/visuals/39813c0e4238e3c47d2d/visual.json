@@ -1,0 +1,178 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "name": "39813c0e4238e3c47d2d",
+  "position": {
+    "x": 55.261044176706832,
+    "y": 388.11244979919678,
+    "z": 1000,
+    "height": 331.566265060241,
+    "width": 643.855421686747,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "Calendar"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "Date"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Year"
+                }
+              },
+              "queryRef": "Calendar.Date.Variation.Date Hierarchy.Year",
+              "nativeQueryRef": "Date Year",
+              "active": true
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "Calendar"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "Date"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Month"
+                }
+              },
+              "queryRef": "Calendar.Date.Variation.Date Hierarchy.Month",
+              "nativeQueryRef": "Date Month",
+              "active": false
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "df_fuel_ckan"
+                    }
+                  },
+                  "Property": "Average Fossils %"
+                }
+              },
+              "queryRef": "df_fuel_ckan.Average Fossils %",
+              "nativeQueryRef": "Average Fossils %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "df_fuel_ckan"
+                    }
+                  },
+                  "Property": "Average Nuclear %"
+                }
+              },
+              "queryRef": "df_fuel_ckan.Average Nuclear %",
+              "nativeQueryRef": "Average Nuclear %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "df_fuel_ckan"
+                    }
+                  },
+                  "Property": "Average Renewable %"
+                }
+              },
+              "queryRef": "df_fuel_ckan.Average Renewable %",
+              "nativeQueryRef": "Average Renewable %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "df_fuel_ckan"
+                    }
+                  },
+                  "Property": "Average Other %"
+                }
+              },
+              "queryRef": "df_fuel_ckan.Average Other %",
+              "nativeQueryRef": "Average Other %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "df_fuel_ckan"
+                    }
+                  },
+                  "Property": "Average Imports %"
+                }
+              },
+              "queryRef": "df_fuel_ckan.Average Imports %",
+              "nativeQueryRef": "Average Imports %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "df_fuel_ckan"
+                    }
+                  },
+                  "Property": "Average Storage %"
+                }
+              },
+              "queryRef": "df_fuel_ckan.Average Storage %",
+              "nativeQueryRef": "Average Storage %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "df_fuel_ckan"
+                    }
+                  },
+                  "Property": "Average Hydro %"
+                }
+              },
+              "queryRef": "df_fuel_ckan.Average Hydro %",
+              "nativeQueryRef": "Average Hydro %"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "version": "4.0",
+  "datasetReference": {
+    "byPath": {
+      "path": "../UK_energy_mix.SemanticModel"
+    }
+  }
+}

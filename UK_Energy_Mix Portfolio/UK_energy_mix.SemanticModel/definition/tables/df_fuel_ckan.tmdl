@@ -1,0 +1,506 @@
+table df_fuel_ckan
+	lineageTag: e6860ad3-5c49-45ea-8385-f8dc97c7d385
+
+	measure 'Average Nuclear %' = Average(df_fuel_ckan[NUCLEAR_perc])
+		formatString: 0
+		lineageTag: a68d4261-094d-4f3d-822a-fb439bda41ee
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Average Coal %' = AVERAGE('df_fuel_ckan'[COAL_perc])
+		formatString: 0.00
+		lineageTag: 53e10dfc-8ace-45e8-a128-ab8d24eb9c6a
+
+	measure 'Average Gas %' = AVERAGE('df_fuel_ckan'[GAS_perc])
+		formatString: 0.00
+		lineageTag: 1252a5d7-392a-4938-ad50-c5ab581fbd13
+
+	measure 'Average Hydro %' = AVERAGE('df_fuel_ckan'[HYDRO_perc])
+		formatString: 0.00
+		lineageTag: 6c5d5476-aaec-4819-a5c8-c21afa1c690d
+
+	measure 'Average Renewable %' = AVERAGE('df_fuel_ckan'[RENEWABLE_perc])
+		formatString: 0.00
+		lineageTag: ffebeefd-5f5a-4e68-95d0-0ba2b6fe092a
+
+	measure 'Average Imports %' = AVERAGE(df_fuel_ckan[IMPORTS_perc])
+		formatString: 0.00
+		lineageTag: 58e21303-b3ba-464f-b37e-cb8ceb1474a0
+
+	measure 'Average Fossils %' = AVERAGE('df_fuel_ckan'[FOSSIL_perc])
+		formatString: 0.00
+		lineageTag: 33a2b13b-b3f2-42e6-a68f-d36754262775
+
+	measure 'Average Solar %' = AVERAGE('df_fuel_ckan'[SOLAR_perc])
+		formatString: 0.00
+		lineageTag: b7c77fa2-6728-4d27-9448-846ee85d1c84
+
+	measure 'Average Low Carbon %' = ```
+			AVERAGE('df_fuel_ckan'[LOW_CARBON_perc]) + 0 
+			```
+		formatString: 0.00
+		lineageTag: d997c45e-e371-47d3-af35-14434689fdf1
+
+	measure 'Average Other %' = AVERAGE('df_fuel_ckan'[OTHER_perc])
+		formatString: #,0.00
+		lineageTag: 0960a6a3-32df-4996-92e4-30e80987225d
+
+	measure 'Average Storage %' = AVERAGE('df_fuel_ckan'[STORAGE_perc])
+		formatString: 0.00
+		lineageTag: d61b5d1d-49f4-4aa7-99ba-208ecbf17c3c
+
+	measure 'Average Wind %' = AVERAGEX('df_fuel_ckan','df_fuel_ckan'[WIND_perc] + 'df_fuel_ckan'[Average embedded wind %])
+		formatString: 0.00
+		lineageTag: 4d23e453-b846-462a-9f80-e878e12f119f
+
+	measure 'Average embedded wind %' = AVERAGE('df_fuel_ckan'[WIND_EMB_perc])
+		formatString: 0.00
+		lineageTag: e5d60049-063c-49b8-b5d8-f1c9efd1c9d5
+
+	measure 'Renewable Energy GWh' =
+			
+			SUMX(
+			    'df_fuel_ckan',
+			    'df_fuel_ckan'[RENEWABLE] * 0.5 / 1000   // MW × 0.5 hours = MWh → /1000 = GWh
+			)
+		lineageTag: fcdf1075-cadb-4336-b888-c61e39b22b30
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'YoY % Change Renewable GWh' = ```
+			
+			    VAR CurrentGWh = [Renewable Energy GWh]
+			    VAR PreviousGWh = CALCULATE([Renewable Energy GWh], SAMEPERIODLASTYEAR('Calendar'[Date]))
+			    RETURN
+			         IF(
+			           NOT ISBLANK(PreviousGWh),
+			        DIVIDE(CurrentGWh - PreviousGWh, PreviousGWh) * 100,
+			        BLANK()
+			         )
+			```
+		lineageTag: c94fcf1e-0b15-4d67-b30f-9fef3c71a877
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Carbon intensity' = AVERAGE('df_fuel_ckan'[CARBON_INTENSITY])
+		formatString: 0.00
+		lineageTag: 5427cc0d-d619-4a20-a4b4-52f559c34ec4
+
+	measure 'Total Generation' = SUMX('df_fuel_ckan',('df_fuel_ckan'[GENERATION]*0.5)/1000)
+		lineageTag: 6b9836bf-9ab5-4418-a19a-ddb99427d688
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'AVERAGE Zero Carbon %' = AVERAGE('df_fuel_ckan'[ZERO_CARBON_perc])
+		formatString: 0.00
+		lineageTag: f122783b-c5ef-4765-ab6f-c24095955b5e
+
+	measure 'Average Biomass %' = AVERAGE('df_fuel_ckan'[BIOMASS_perc])
+		formatString: 0.00
+		lineageTag: a39ba16b-daf2-42df-9ebd-e6b77543c025
+
+	measure 'max error in ‘GENERATION_perc’&Sum of individual energy% mix' = MAXX( 'df_fuel_ckan',ABS('df_fuel_ckan'[Sum of Individual Energy% Mix] - 'df_fuel_ckan'[GENERATION_perc]))
+		lineageTag: c6d08043-a66d-4923-928e-130c2b6084dc
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average error in ‘GENERATION_perc’ and sum of individual energy% mix' = ```
+			
+			 AVERAGEX('df_fuel_ckan',ABS('df_fuel_ckan'[GENERATION_perc] - 'df_fuel_ckan'[Sum of Individual Energy% Mix]))
+			```
+		formatString: 0.00
+		lineageTag: 7a191466-e846-437d-bfd1-95cd4cea4594
+
+	measure 'Total Energy GWh' = SUMX('df_fuel_ckan','df_fuel_ckan'[GENERATION]*0.5/1000) // total energy in GWh
+		lineageTag: d3e10c1d-c34f-4e61-be7a-f360048e5274
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Generation' = AVERAGEX('df_fuel_ckan',  'df_fuel_ckan'[GENERATION]/1000)
+		formatString: 0.00
+		lineageTag: ceccdbfd-3102-4df8-8f5f-5d625636b20e
+
+	measure 'Average Fossil Power' = AVERAGEX('df_fuel_ckan', 'df_fuel_ckan'[FOSSIL]/1000)
+		formatString: 0.00
+		lineageTag: 922eef01-86d4-4495-b816-ea0d40d720e5
+
+	measure 'Average Nuclear Power' = AVERAGEX('df_fuel_ckan','df_fuel_ckan'[NUCLEAR]/1000)
+		formatString: 0.00
+		lineageTag: b5db8fb8-341c-4683-b07e-eb4e98dcab5a
+
+	measure 'Average Wind Power' = AVERAGEX('df_fuel_ckan', ('df_fuel_ckan'[WIND] + 'df_fuel_ckan'[WIND_EMB])/1000 )
+		formatString: 0.00
+		lineageTag: 64ae38e6-1365-4a53-94b0-d1ee426fb3b6
+
+	measure 'Average Hydro Power' = AVERAGEX('df_fuel_ckan','df_fuel_ckan'[HYDRO]/1000)
+		formatString: 0.00
+		lineageTag: 69f84d08-c0a1-4f69-a511-e6fc38bb95c7
+
+	measure 'Average Biomass Power' = AVERAGEX('df_fuel_ckan', 'df_fuel_ckan'[BIOMASS]/1000)
+		formatString: 0.00
+		lineageTag: e7ef3032-1348-4b5b-8077-dcb60f1c2310
+
+	measure 'Average Other Power' = AVERAGEX('df_fuel_ckan','df_fuel_ckan'[OTHER]/1000)
+		formatString: 0.00
+		lineageTag: 3b48ba7a-6ac6-443d-94b9-0b461a2639f6
+
+	measure 'Average Solar Power' = AVERAGEX('df_fuel_ckan','df_fuel_ckan'[SOLAR]/1000)
+		formatString: 0.00
+		lineageTag: 32548711-74ff-489c-876b-190d269c2d98
+
+	measure 'Average Storage Power' = AVERAGEX('df_fuel_ckan','df_fuel_ckan'[STORAGE]/1000)
+		formatString: 0.00
+		lineageTag: 3e0765be-9eb2-4902-9bab-5236ff592ee0
+
+	measure 'Average Imported Power' = AVERAGEX('df_fuel_ckan','df_fuel_ckan'[IMPORTS]/1000)
+		formatString: 0.00
+		lineageTag: c42aeeb4-9556-4230-8ff6-cf98c2b44319
+
+	measure 'Average Renewable Power' = AverageX('df_fuel_ckan', 'df_fuel_ckan'[RENEWABLE]/1000)
+		lineageTag: 419fe9d9-463f-4c08-a48c-651e0c10bc31
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DATETIME
+		dataType: dateTime
+		formatString: m/d/yyyy hh:nn:ss AM/PM
+		lineageTag: 9ac16fe7-e894-4304-afca-545bc84657b9
+		summarizeBy: none
+		sourceColumn: DATETIME
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column GAS
+		dataType: int64
+		formatString: 0
+		lineageTag: 397321c2-7c8b-4e30-a8ad-2b9b9bf15498
+		summarizeBy: sum
+		sourceColumn: GAS
+
+		annotation SummarizationSetBy = Automatic
+
+	column COAL
+		dataType: int64
+		formatString: 0
+		lineageTag: 61782c51-adbd-4c19-abf3-966b4fd0e60d
+		summarizeBy: sum
+		sourceColumn: COAL
+
+		annotation SummarizationSetBy = Automatic
+
+	column NUCLEAR
+		dataType: int64
+		formatString: 0
+		lineageTag: b6f7759c-da86-4ac9-8309-fa8a68e4718e
+		summarizeBy: sum
+		sourceColumn: NUCLEAR
+
+		annotation SummarizationSetBy = Automatic
+
+	column WIND
+		dataType: int64
+		formatString: 0
+		lineageTag: bb867aff-fb04-4c71-9c1e-18c2667b67dc
+		summarizeBy: sum
+		sourceColumn: WIND
+
+		annotation SummarizationSetBy = Automatic
+
+	column WIND_EMB
+		dataType: int64
+		formatString: 0
+		lineageTag: ce4389c5-19f7-4de5-ad53-a9e62cabdd78
+		summarizeBy: sum
+		sourceColumn: WIND_EMB
+
+		annotation SummarizationSetBy = Automatic
+
+	column HYDRO
+		dataType: int64
+		formatString: 0
+		lineageTag: 7afbac9a-2f97-451c-9a7f-c3d0e221a75f
+		summarizeBy: sum
+		sourceColumn: HYDRO
+
+		annotation SummarizationSetBy = Automatic
+
+	column IMPORTS
+		dataType: int64
+		formatString: 0
+		lineageTag: 16140a1e-39dc-4bbe-8b44-de72a3e812f5
+		summarizeBy: sum
+		sourceColumn: IMPORTS
+
+		annotation SummarizationSetBy = Automatic
+
+	column BIOMASS
+		dataType: int64
+		formatString: 0
+		lineageTag: 6e2f0b27-2bf6-49e3-a90b-f468895b5b68
+		summarizeBy: sum
+		sourceColumn: BIOMASS
+
+		annotation SummarizationSetBy = Automatic
+
+	column OTHER
+		dataType: int64
+		formatString: 0
+		lineageTag: 221db900-ffed-40d1-bb4b-58f2486d89cb
+		summarizeBy: sum
+		sourceColumn: OTHER
+
+		annotation SummarizationSetBy = Automatic
+
+	column SOLAR
+		dataType: int64
+		formatString: 0
+		lineageTag: 472b534f-ecc8-4539-89de-98fefbe21a5b
+		summarizeBy: sum
+		sourceColumn: SOLAR
+
+		annotation SummarizationSetBy = Automatic
+
+	column STORAGE
+		dataType: int64
+		formatString: 0
+		lineageTag: 80382550-bb56-4c50-9dba-da0fcba79d8e
+		summarizeBy: sum
+		sourceColumn: STORAGE
+
+		annotation SummarizationSetBy = Automatic
+
+	column GENERATION
+		dataType: int64
+		formatString: 0
+		lineageTag: cf849c69-665e-496f-8a09-ff940166a687
+		summarizeBy: sum
+		sourceColumn: GENERATION
+
+		annotation SummarizationSetBy = Automatic
+
+	column CARBON_INTENSITY
+		dataType: int64
+		formatString: 0
+		lineageTag: fbf2d03a-a078-4469-b201-8c8d476689e0
+		summarizeBy: sum
+		sourceColumn: CARBON_INTENSITY
+
+		annotation SummarizationSetBy = Automatic
+
+	column LOW_CARBON
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b02ceb6-7126-4c59-818e-8a33c3832aa9
+		summarizeBy: sum
+		sourceColumn: LOW_CARBON
+
+		annotation SummarizationSetBy = Automatic
+
+	column ZERO_CARBON
+		dataType: int64
+		formatString: 0
+		lineageTag: 87f0d565-eff2-416f-9b14-17339d00e977
+		summarizeBy: sum
+		sourceColumn: ZERO_CARBON
+
+		annotation SummarizationSetBy = Automatic
+
+	column RENEWABLE
+		dataType: int64
+		formatString: 0
+		lineageTag: d9459775-28e1-4a30-923b-44f60588f3cf
+		summarizeBy: sum
+		sourceColumn: RENEWABLE
+
+		annotation SummarizationSetBy = Automatic
+
+	column FOSSIL
+		dataType: int64
+		formatString: 0
+		lineageTag: 487dd222-733b-42ef-955f-a93baf9e5eb4
+		summarizeBy: sum
+		sourceColumn: FOSSIL
+
+		annotation SummarizationSetBy = Automatic
+
+	column GAS_perc
+		dataType: double
+		lineageTag: 3d4756ab-70d5-46cc-bb49-8be628647566
+		summarizeBy: sum
+		sourceColumn: GAS_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column COAL_perc
+		dataType: double
+		lineageTag: 96e840f7-44db-40cb-8c8a-2546b4042abc
+		summarizeBy: sum
+		sourceColumn: COAL_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NUCLEAR_perc
+		dataType: double
+		lineageTag: 1e2196fc-f8bb-4189-bd20-bac2f8b5a4cc
+		summarizeBy: sum
+		sourceColumn: NUCLEAR_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column WIND_perc
+		dataType: double
+		lineageTag: 5216f2c3-8ffc-4e5b-a0a1-0c8e53d218b8
+		summarizeBy: sum
+		sourceColumn: WIND_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column WIND_EMB_perc
+		dataType: double
+		lineageTag: f86dc16d-b023-4df7-b149-ded600b31a20
+		summarizeBy: sum
+		sourceColumn: WIND_EMB_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column HYDRO_perc
+		dataType: double
+		lineageTag: 18eed7cb-9bef-49fc-9416-f86c6a42b503
+		summarizeBy: sum
+		sourceColumn: HYDRO_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column IMPORTS_perc
+		dataType: double
+		lineageTag: 842428b2-f1f8-4024-87dc-4352dccc98cb
+		summarizeBy: sum
+		sourceColumn: IMPORTS_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column BIOMASS_perc
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b15e630-a0bb-49a4-92fc-a597bf483811
+		summarizeBy: sum
+		sourceColumn: BIOMASS_perc
+
+		annotation SummarizationSetBy = Automatic
+
+	column OTHER_perc
+		dataType: int64
+		formatString: 0
+		lineageTag: 6ad506a2-2e40-42c3-8958-c17583ab148e
+		summarizeBy: sum
+		sourceColumn: OTHER_perc
+
+		annotation SummarizationSetBy = Automatic
+
+	column SOLAR_perc
+		dataType: int64
+		formatString: 0
+		lineageTag: 7443f8f0-395e-46e1-88a2-42738bcc5ae0
+		summarizeBy: sum
+		sourceColumn: SOLAR_perc
+
+		annotation SummarizationSetBy = Automatic
+
+	column STORAGE_perc
+		dataType: double
+		lineageTag: f1258b18-587d-4f66-9dbf-302f4c6ae3b8
+		summarizeBy: sum
+		sourceColumn: STORAGE_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column GENERATION_perc
+		dataType: int64
+		formatString: 0
+		lineageTag: 0dcb21e4-506f-4632-9afe-17f4a0ef76f3
+		summarizeBy: sum
+		sourceColumn: GENERATION_perc
+
+		annotation SummarizationSetBy = Automatic
+
+	column LOW_CARBON_perc
+		dataType: double
+		lineageTag: 66de22d9-05c4-4551-91ae-c6ffcb551358
+		summarizeBy: sum
+		sourceColumn: LOW_CARBON_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ZERO_CARBON_perc
+		dataType: double
+		lineageTag: 088d89aa-957a-4306-8b44-e000a8c3e5c4
+		summarizeBy: sum
+		sourceColumn: ZERO_CARBON_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column RENEWABLE_perc
+		dataType: double
+		lineageTag: aee99c02-9fe4-4c00-a35e-faf8fae0fe3e
+		summarizeBy: sum
+		sourceColumn: RENEWABLE_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FOSSIL_perc
+		dataType: double
+		lineageTag: 969416bd-46fb-439b-9ebf-7fbc03f4b0d2
+		summarizeBy: sum
+		sourceColumn: FOSSIL_perc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Sum of Individual Energy% Mix' = [GAS_perc]+[COAL_perc]+[NUCLEAR_perc]+[HYDRO_perc]+[IMPORTS_perc]+[WIND_EMB_perc]+[WIND_perc] +[OTHER_perc] + [BIOMASS_perc] + [STORAGE_perc] +[SOLAR_perc]
+		lineageTag: ad3db10a-93d6-4ed8-8aae-d4c364fdbb4a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition df_fuel_ckan = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\mary2\Downloads\df_fuel_ckan.xlsx"), null, true),
+				    df_fuel_ckan_Sheet = Source{[Item="df_fuel_ckan",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(df_fuel_ckan_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"DATETIME", type datetime}, {"GAS", Int64.Type}, {"COAL", Int64.Type}, {"NUCLEAR", Int64.Type}, {"WIND", Int64.Type}, {"WIND_EMB", Int64.Type}, {"HYDRO", Int64.Type}, {"IMPORTS", Int64.Type}, {"BIOMASS", Int64.Type}, {"OTHER", Int64.Type}, {"SOLAR", Int64.Type}, {"STORAGE", Int64.Type}, {"GENERATION", Int64.Type}, {"CARBON_INTENSITY", Int64.Type}, {"LOW_CARBON", Int64.Type}, {"ZERO_CARBON", Int64.Type}, {"RENEWABLE", Int64.Type}, {"FOSSIL", Int64.Type}, {"GAS_perc", type number}, {"COAL_perc", type number}, {"NUCLEAR_perc", type number}, {"WIND_perc", type number}, {"WIND_EMB_perc", type number}, {"HYDRO_perc", type number}, {"IMPORTS_perc", type number}, {"BIOMASS_perc", Int64.Type}, {"OTHER_perc", Int64.Type}, {"SOLAR_perc", Int64.Type}, {"STORAGE_perc", type number}, {"GENERATION_perc", Int64.Type}, {"LOW_CARBON_perc", type number}, {"ZERO_CARBON_perc", type number}, {"RENEWABLE_perc", type number}, {"FOSSIL_perc", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
